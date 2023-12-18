@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <script
+            src="https://www.unpkg.com/socket.io@4.5.4/client-dist/socket.io.min.js"
+        ></script>
+        <script defer src="index.js"></script>
+        <link rel="stylesheet" href="index.css"/>
+    </head>
+    <body>
+        <h1>Onirix Labs WebSocket prototype</h1>
+
+        <section>
+            <h2>Status</h2>
+            <p id="status-message">Connecting...</p>
+        </section>
+
+        <section>
+            <h2>Rooms</h2>
+            <form>
+                <input type="text" name="room" placeholder="Room name"/>
+                <input
+                    id="enter-button"
+                    disabled
+                    type="button"
+                    value="Enter"
+                    onclick="onEnterRoom()"
+                />
+                <input
+                    id="leave-button"
+                    disabled
+                    type="button"
+                    value="Leave"
+                    onclick="onLeaveRoom()"
+                />
+            </form>
+        </section>
+
+        <section>
+            <h2>Messages</h2>
+            <ul id="message-log">
+            </ul>
+            <form>
+                <input type="text" name="name" placeholder="Name"/>
+                <input type="text" name="message" placeholder="Message"/>
+                <input
+                    id="broadcast-button"
+                    disabled
+                    type="button"
+                    value="Send to everyone"
+                    onclick="onBroadcast()"
+                />
+                <input
+                    id="send-to-room-button"
+                    disabled
+                    type="button"
+                    value="Send to room"
+                    onclick="onSendToRoom()"
+                />
+            </form>
+        </section>
+
+    </body>
+</html>

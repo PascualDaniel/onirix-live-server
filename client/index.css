@@ -1,0 +1,23 @@
+#message-log {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#message-log .sender {
+    font-weight: bold;
+}
+
+#message-log .sender::before {
+    font-weight: bold;
+    display: inline;
+    content: '[';
+}
+
+#message-log .sender::after {
+    font-weight: bold;
+    display: inline;
+    content: ']: ';
+}
