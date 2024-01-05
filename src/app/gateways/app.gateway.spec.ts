@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppGateway } from './app.gateway';
 import { Server, Socket } from 'socket.io';
-import { PublishDTO } from './publish.dto';
+import { PublishDTO } from '../dtos/publish.dto';
 import WebSocket from 'jest-websocket-mock';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 describe('AppGateway', () => {

@@ -6,8 +6,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { PublishDTO } from './publish.dto';
-import { RoomInfo } from './room-info';
+import { PublishDTO } from '../dtos/publish.dto';
+import { RoomInfo } from '../../models/room-info';
 
 /**
  * Single gateway of the application. There is only a single gateway since this

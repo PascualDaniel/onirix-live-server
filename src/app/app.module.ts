@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppGateway } from './app.gateway';
-import { AppController } from './app.controller';
+import { AppGateway } from './gateways/app.gateway';
+import { AppController } from './controllers/app.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
