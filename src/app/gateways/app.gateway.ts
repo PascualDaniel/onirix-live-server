@@ -89,6 +89,48 @@ export class AppGateway {
   }
 
   /**
+   * This is the handler of the message 'close-room'.
+   * @param dto This is the data of the message.
+   * @param client This is the socket of the client who sent the data.
+   * @returns A boolean that will be sent back to the client.
+   */
+  @SubscribeMessage('close-room')
+  handleCloseRoom(
+    @MessageBody() room: string,
+    @ConnectedSocket() client: Socket,
+  ): boolean {
+    console.log(
+      `${new Date().toISOString()}\t[${client.id}]: close-room ${JSON.stringify(
+        room,
+      )}`,
+    );
+    if (this.rooms.has(room)) {
+
+
+
+      // Check if the client is the creator of the room
+      if (this.rooms.get(room).hostId === client.id) {
+        // Get the list of users in the room
+        const users = this.rooms.get(room).players;
+        // Remove each user from the room
+        users.forEach(userId => {
+          this.server.sockets.sockets.get(userId).leave(room);
+        });
+        // Remove room and return true
+        this.rooms.delete(room);
+        return true;
+      } else {
+        // Client is not the creator of the room, return false
+        return false;
+      }
+    } else {
+      // Room doesn't exist, return false
+      return false;
+    }
+  }
+
+
+  /**
    * Handler for the message 'join-room' that allows a user to join a room,
    * that is a group of clients that will receive the same information.
    * @param room Name of the room (data of the message).
@@ -98,7 +140,7 @@ export class AppGateway {
   handleJoinRoom(
     @MessageBody() room: string,
     @ConnectedSocket() client: Socket,
-  ) {
+  ): boolean {
     console.log(
       `${new Date().toISOString()}\t[${client.id}]: join-room ${JSON.stringify(
         room,
@@ -107,21 +149,56 @@ export class AppGateway {
 
     //add a room to the list of rooms
     if (!this.rooms.has(room)) {
-      this.rooms.set(room, new RoomInfo(1, client.id));
-      this.rooms.get(room).addPlayer(client.id);
+      //this.rooms.set(room, new RoomInfo(1, client.id));
+      //this.rooms.get(room).addPlayer(client.id);
+      console.log("room didnt exists" + client.id);
+      return false;
     } else {
       //this.rooms.set(room, new RoomInfo(this.rooms.get(room).numberOfPlayers+1, this.rooms.get(room).hostId));
-
       this.rooms.get(room).numberOfPlayers = this.rooms.get(room).numberOfPlayers + 1;
       this.rooms.get(room).addPlayer(client.id);
+      client.join(room);
+      this.server.to(client.id).emit('room-info', this.rooms.get(room).numberOfPlayers);
+      console.log("room " + client.id + " " + this.rooms.get(room));
+      return true;
     }
-    /* Joins the room specified. All the rooms a socket has joined are
-           listed in client.rooms.
-        */
-    client.join(room);
-    this.server.to(client.id).emit('room-info', this.rooms.get(room).numberOfPlayers);
-    console.log("room " + client.id + " " + this.rooms.get(room));
+
+
   }
+
+  /**
+   * Handler for the message 'create-room' that allows a user to create a room,
+   * that is a group of clients that will receive the same information.
+   * @param room Name of the room (data of the message).
+   * @param client Client socket.
+   */
+  @SubscribeMessage('create-room')
+  handleCreateRoom(
+    @MessageBody() room: string,
+    @ConnectedSocket() client: Socket,
+  ): boolean {
+    console.log(
+      `${new Date().toISOString()}\t[${client.id}]: create-room ${JSON.stringify(
+        room,
+      )}`,
+    );
+    // Check if room exists, if exits emit notification to client, if dont create room and add client to room
+    if (this.rooms.has(room)) {
+      // Room already exists, return false
+      console.log("room already exists" + client.id);
+      return false;
+    } else {
+      // Create room and add client to room, then return true
+      this.rooms.set(room, new RoomInfo(1, client.id));
+      this.rooms.get(room).addPlayer(client.id);
+      client.join(room);
+      console.log("room created" + client.id + "" + this.rooms.get(room));
+      return true;
+    }
+  }
+
+
+
 
   /**
    * Handler for the message 'leave-room' that allows a user to leave a room.
@@ -132,19 +209,21 @@ export class AppGateway {
   handleLeaveRoom(
     @MessageBody() room: string,
     @ConnectedSocket() client: Socket,
-  ) {
+  ):void {
     console.log(
       `${new Date().toISOString()}\t[${client.id}]: leave-room ${JSON.stringify(
         room,
       )}`,
     );
-
+    // Check if room exists
+    if (!this.rooms.has(room)) {
+      console.log(`Room ${room} does not exist`);
+      return;
+    }
     //remove a room from the list of rooms
     if (this.rooms.has(room)) {
       this.rooms.get(room).numberOfPlayers = this.rooms.get(room).numberOfPlayers - 1;
       this.rooms.get(room).removePlayer(client.id);
-
-      //  this.rooms.set(room, new RoomInfo(this.rooms.get(room).numberOfPlayers-1, this.rooms.get(room).hostId) );
 
     } else if (this.rooms.get(room).numberOfPlayers == 1) {
       this.rooms.delete(room);
