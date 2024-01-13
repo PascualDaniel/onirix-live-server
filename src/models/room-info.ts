@@ -18,10 +18,12 @@ export class RoomInfo {
 
     addPlayer(player: string){
         this.players.push(player);
+        this.numberOfPlayers++;
     }
 
     removePlayer(player: string){
         this.players = this.players.filter(item => item !== player);
+        this.numberOfPlayers--; 
     }
     
 }

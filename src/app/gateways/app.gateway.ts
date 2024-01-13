@@ -256,7 +256,7 @@ export class AppGateway {
   handleStart(
     @MessageBody() room: string,
     @ConnectedSocket() client: Socket,
-  ) {
+  ):boolean {
     console.log(
       `${new Date().toISOString()}\t[${client.id
       }]: start ${JSON.stringify(room)}`,
@@ -268,6 +268,7 @@ export class AppGateway {
         this.rooms.get(room).playerturnID = this.rooms.get(room).hostId;
 
         this.server.to(room).emit('start')
+        return true;
       }
     }
   }
