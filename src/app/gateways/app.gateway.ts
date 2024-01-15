@@ -80,12 +80,7 @@ export class AppGateway {
            the client is in, including the sender.
         */
     return this.server.to(dto.room).emit('published', dto);
-    /* If the sender must be excluded (that is, send to everyone in the room
-           except the sender of the 'send-to-room' message), the client's socket
-           can be used:
-
-           return client.to(dto.room).emit('published', dto);
-        */
+    
   }
 
   /**
