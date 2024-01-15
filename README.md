@@ -1,3 +1,8 @@
+# Onirix Live Server
+
+[![codecov](https://codecov.io/gh/PascualDaniel/onirix-live-server/graph/badge.svg?token=D91VIDO92P)](https://codecov.io/gh/PascualDaniel/onirix-live-server)
+
+
 ## Description
 
 This repository has a WebSocket server and a sample client to communicate with it. The code for the server program is located in the `src` directory and the code for the sample client is located in the `client` directory.
@@ -26,9 +31,6 @@ $ npm run start:prod
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
